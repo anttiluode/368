@@ -1,0 +1,30 @@
+{
+  "schema": "repo368/fast-retained-memory-attacks-summary-v1",
+  "workflow_run": 34123592516,
+  "evaluation_seeds": [1000, 1099],
+  "n_worlds": 100,
+  "aggregate": {
+    "stationary": {
+      "fast_only": {"mse": 0.006862708898980468, "births": 0.0},
+      "cache_only": {"mse": 0.006862708898980468, "births": 0.91, "final_memories": 0.91, "memory_slots": 18.2},
+      "hybrid": {"mse": 0.0068683829169530084, "births": 0.91, "retrievals": 2.07, "final_memories": 0.91}
+    },
+    "no_return": {
+      "fast_only": {"mse": 0.023445614006298604, "births": 0.0},
+      "cache_only": {"mse": 0.023445614006298604, "births": 2.78, "final_memories": 2.78, "memory_slots": 55.6},
+      "hybrid": {"mse": 0.02343958482834564, "births": 2.78, "retrievals": 0.84, "final_memories": 2.78}
+    },
+    "close_recurrent": {
+      "construction": "B and C are each exactly Frobenius distance 0.6 from A; their perturbation directions are orthogonal",
+      "fast_only": {"mse": 0.008273780899108902, "return_early16_mse": 0.03344881806141713, "births": 0.0},
+      "cache_only": {"mse": 0.008273780899108902, "return_early16_mse": 0.03344881806141713, "births": 2.89, "final_memories": 2.89, "memory_slots": 57.8},
+      "hybrid": {"mse": 0.008194185466308398, "return_early16_mse": 0.03189970261620226, "births": 2.89, "retrievals": 2.65, "final_memories": 2.89}
+    }
+  },
+  "paired_hybrid_minus_fast": {
+    "stationary": {"mean_difference": 0.000005674017972543454, "bootstrap95": [-0.0000011346810326688366, 0.000012282655634863295]},
+    "no_return": {"mean_difference": -0.000006029177952961533, "bootstrap95": [-0.00004056814085453062, 0.000018202130448773]},
+    "close_recurrent": {"mean_difference": -0.00007959543280050278, "bootstrap95": [-0.00012408413278611788, -0.00003398270448246766]}
+  },
+  "claim_boundary": "Retained snapshots provide a small measurable benefit in a recurring close-context world, but no measurable advantage when distinct contexts never return. The current rule nevertheless stores nearly three memories in that no-return stream, exposing the next unresolved problem: survival/eviction must be based on earned reuse value rather than successful initial fit alone."
+}
