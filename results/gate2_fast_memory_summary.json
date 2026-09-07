@@ -1,0 +1,52 @@
+{
+  "schema": "repo368/fast-retained-memory-summary-v1",
+  "workflow_run": 34123592516,
+  "head_commit": "1f3b30fef791b956ddcdcb86548917185fd4c533",
+  "evaluation_seeds": [1000, 1099],
+  "n_worlds": 100,
+  "reused_evaluation_set": true,
+  "config": {
+    "discount": 0.5,
+    "bad_ewma_decay": 0.8,
+    "bad_ewma_threshold": 0.03,
+    "stable_window": 8,
+    "stable_mse": 0.012,
+    "min_candidate_gap": 32,
+    "eval_window": 16,
+    "accept_mse": 0.012,
+    "distinct_mse": 0.02,
+    "max_memories": 6,
+    "router_window": 3,
+    "retrieve_ratio": 0.7,
+    "retrieve_abs_mse": 0.03,
+    "retrieve_cooldown": 4
+  },
+  "aggregate": {
+    "base": {
+      "fast_only": {"mse": 0.025071155994209213, "return_early16_mse": 0.1657540352099529, "births": 0.0, "retrievals": 0.0, "final_memories": 0.0},
+      "cache_only": {"mse": 0.025071155994209213, "return_early16_mse": 0.1657540352099529, "births": 2.98, "retrievals": 0.0, "final_memories": 2.98, "memory_slots": 59.6},
+      "hybrid": {"mse": 0.022754317526278912, "return_early16_mse": 0.13066903338878644, "births": 2.99, "retrievals": 3.49, "final_memories": 2.99, "memory_slots": 59.8}
+    },
+    "noise_burst": {
+      "fast_only": {"mse": 0.03863939370566904, "births": 0.0},
+      "cache_only": {"mse": 0.03863939370566904, "births": 1.02, "final_memories": 1.02},
+      "hybrid": {"mse": 0.038554938789018334, "births": 1.02, "retrievals": 2.52, "final_memories": 1.02}
+    },
+    "quadratic_stationary": {
+      "fast_only": {"mse": 0.070816683847212, "births": 0.0},
+      "cache_only": {"mse": 0.070816683847212, "births": 0.0, "adequacy_rejections": 3.11},
+      "hybrid": {"mse": 0.070816683847212, "births": 0.0, "adequacy_rejections": 3.11}
+    },
+    "smooth": {
+      "fast_only": {"mse": 0.008540858384298635, "return_early16_mse": 0.005642918547097475},
+      "cache_only": {"mse": 0.008540858384298635, "births": 1.07, "final_memories": 1.07},
+      "hybrid": {"mse": 0.0085437298957613, "births": 1.07, "retrievals": 0.72, "final_memories": 1.07}
+    }
+  },
+  "paired_hybrid_minus_fast": {
+    "base": {"mean_difference": -0.0023168384679303003, "bootstrap95": [-0.0029910332223401386, -0.0017201671940245214]},
+    "noise_burst": {"mean_difference": -0.00008445491665070318, "bootstrap95": [-0.00014344945651459704, -0.000025489927447382998]},
+    "smooth": {"mean_difference": 0.0000028715114626656593, "bootstrap95": [-0.0000026736134541699042, 0.000009034829872805197]}
+  },
+  "claim_boundary": "A fast exponentially-forgetting current model plus prospectively retained frozen snapshots and causal retrieval modestly improves the recurring switching benchmark and early return-to-context error. The same retention machinery without retrieval is prediction-identical to fast-only. The rule is hand-set, the held-out seeds are reused from the repo lineage, and memory cost is not yet part of an optimized objective."
+}
