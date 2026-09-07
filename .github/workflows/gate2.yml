@@ -21,3 +21,5 @@ jobs:
         run: python gate2_fast_memory.py --start 0 --n 20 --out /tmp/gate2_dev.json
       - name: Held-out audit
         run: python gate2_fast_memory.py --start 1000 --n 100 --out /tmp/gate2_heldout.json
+      - name: Recurrence and close-context attacks
+        run: python gate2_attacks.py --start 1000 --n 100 --out /tmp/gate2_attacks.json
