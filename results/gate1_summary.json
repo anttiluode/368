@@ -1,0 +1,16 @@
+{
+  "schema": "repo368/gate1-summary-v1",
+  "n_heldout_worlds": 100,
+  "aggregate": [
+    {"learner":"fixed","active":false,"n":100,"mse":0.10082218213813411,"returned_early16_mse":0.0866717459172056,"probes_per_decision":0.0,"births":0.0},
+    {"learner":"fixed","active":true,"n":100,"mse":0.07461104252523981,"returned_early16_mse":0.059771814188481216,"probes_per_decision":0.03389601928555366,"births":0.0},
+    {"learner":"growing","active":false,"n":100,"mse":0.12604919837400907,"returned_early16_mse":0.11659412313556312,"probes_per_decision":0.0,"births":1.97},
+    {"learner":"growing","active":true,"n":100,"mse":0.12202619072821098,"returned_early16_mse":0.10863107759209974,"probes_per_decision":0.02519134828014943,"births":1.85}
+  ],
+  "paired": [
+    {"learner":"fixed","metric":"mse","active_minus_passive":-0.02621113961289429,"bootstrap95":[-0.03757301679421887,-0.01547921819925541]},
+    {"learner":"fixed","metric":"returned_early16_mse","active_minus_passive":-0.02689993172872438,"bootstrap95":[-0.04004179075819546,-0.014779267696062448]},
+    {"learner":"growing","metric":"mse","active_minus_passive":-0.004023007645798099,"bootstrap95":[-0.005580310112521565,-0.002412716920088251]},
+    {"learner":"growing","metric":"returned_early16_mse","active_minus_passive":-0.007963045543463358,"bootstrap95":[-0.011974329666098817,-0.004156586903472708]}
+  ]
+}
