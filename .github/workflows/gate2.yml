@@ -1,0 +1,23 @@
+name: Gate 2 fast-memory audit
+
+on:
+  push:
+    branches: [gate2-fast-memory]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - name: Development smoke
+        run: python gate2_fast_memory.py --start 0 --n 20 --out /tmp/gate2_dev.json
+      - name: Held-out audit
+        run: python gate2_fast_memory.py --start 1000 --n 100 --out /tmp/gate2_heldout.json
