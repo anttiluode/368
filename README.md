@@ -1,83 +1,158 @@
 # 368 — When Should a Learner Split?
 
-**One learner. Several hidden worlds. Growth is allowed, but it has to earn its existence.**
+**Fast adaptation is cheap. Memory is useful. The question is when memory earns the cost of continuing to exist.**
 
-This repository implements the first executable step after the research note [When Should a Learner Split?](https://github.com/anttiluode/Paper). It starts from one small causal predictor and asks whether contradiction should cause ordinary updating, retrieval of existing knowledge, or admission of a new expert.
+This repository follows the research note [When Should a Learner Split?](https://github.com/anttiluode/Paper). It began by asking whether contradiction should cause ordinary updating or admission of another expert. An independent-in-spirit audit by Astra then found the baseline we had failed to include: a tiny single RLS model with ordinary exponential forgetting beats every original Gate 0 learner on overall switching error.
 
-The rule is intentionally stricter than “large error → grow”. A candidate expert is only admitted if, after a bounded training window, it predicts a **subsequent** evaluation window better than the incumbent by a fixed margin. Every scored forecast is logged conceptually before its outcome is used for learning.
+That correction changed the project.
 
-## Gate 0 result
+The strongest current question is no longer simply “when should a learner split?” It is:
 
-Held out: **100 independently generated worlds, seeds 1000–1099**. The main world changes without labels through
+> **When is preserving an old model worth more than simply becoming very good at forgetting it?**
+
+The uploaded review and reproduction files are committed in this repository (`REPORT.md`, `audit.py`, `summary.json`, and related receipts). See [GATE2_RESULT.md](GATE2_RESULT.md) for the newest result.
+
+## Gate 0 — prospective birth
+
+The hidden world changes without labels through:
 
 ```text
 A → B → A → C → B → A
 ```
 
-Each hidden context is a different 2×2 action→consequence map. The learner sees the action, selected scalar readout and consequence, never the context label.
+The original grower begins with one causal linear predictor. Persistent prediction failure may nominate another predictor, but that provisional expert is admitted only if it predicts a later pre-outcome evaluation window better than the incumbent.
 
-| Learner | Base MSE ↓ | New experts | What it means |
-|---|---:|---:|---|
-| single linear | 0.21142 | 0 | continual overwriting |
-| fixed bank of 3 | **0.09940** | 0 (3 supplied) | capacity is preallocated |
-| **prospective grower** | 0.12206 | **2.07** | starts with 1, admits structure only after future evidence |
-| error-only grower | **0.07693** | 3.98 | fastest here, but grows too easily |
+Original 100-world result:
 
-The prospective grower improves over the single learner by **0.08936 MSE** (paired bootstrap 95% interval 0.07792–0.10073 improvement), but it does **not** beat the fixed bank or the aggressive error-only grower on prediction error. That is an important negative: conservative structural admission has a real adaptation cost.
+| learner | MSE ↓ | new experts |
+|---|---:|---:|
+| original non-forgetting single | 0.21142 | 0 |
+| fixed bank of 3 | 0.09940 | 0 (supplied) |
+| prospective grower | 0.12206 | 2.07 |
+| error-only grower | 0.07693 | 3.98 |
 
-The attackers explain why the cost may be worthwhile:
+The result established that future evidence can veto some false growth, but not that growth is necessary.
 
-- **Noise burst, no world change:** prospective grower creates **0 experts in 100/100 worlds**. Error-only growth creates at least one false expert in **100/100**, averaging **2.04 births**.
-- **Wrong representation, no world change:** the environment needs one quadratic interaction. The prospective grower creates **0 experts** because more linear experts do not prospectively help. A single model given the missing quadratic feature reaches **0.00641 MSE**, versus **0.03751** for the linear grower.
+## Astra audit — the missing baseline
 
-So Gate 0 does not answer “growth wins.” It establishes something narrower and more useful:
+Astra reran Gate 0 and Gate 1 exactly and checked the causal prediction boundary. It then added the comparison we should have had from the start: the same four-coefficient current model with exponential forgetting, choosing `discount=0.5` on development seeds 0–19.
 
-> **Prediction failure is not enough evidence for specialization. A split should survive a future-prediction test, and sometimes the correct response to failure is neither another expert nor more memory.**
+On the same reused 100 evaluation worlds:
 
-See [RESULTS.md](RESULTS.md) and the frozen receipts in [`results/`](results/).
+| learner | switching MSE ↓ | first 16 after familiar return ↓ |
+|---|---:|---:|
+| prospective grower | 0.12206 | **0.11254** |
+| **fast forgetting single** | **0.02508** | 0.16503 |
 
-## The mechanism
+So fast adaptation dominates overall, while retained specialization helps immediately when old conditions return. The review also found that the original admission threshold was not a measured resource price, that rejecting a candidate does not diagnose why prediction failed, and that Gate 1 needed matched-cost random/periodic PING controls.
 
-Every expert is a tiny recursive least-squares forward model. Existing experts form a causal sticky mixture. After an outcome arrives, likelihood updates responsibility and gates learning for the *next* decision.
+See [REPORT.md](REPORT.md).
 
-The growing learner additionally tracks persistent inadequacy:
+## Gate 1R — PING survives the matched-cost audit
+
+Gate 1 uses a diagnostic intervention to decide which existing model is currently plausible. Gate 1R reruns that idea with identical scored actions/noise and exactly matched paid-observation budgets.
+
+| fixed-bank policy | MSE ↓ | probes / decision |
+|---|---:|---:|
+| passive | 0.10700 | 0 |
+| random probe, active timing | 0.09518 | 0.03454 |
+| disagreement probe, periodic timing | 0.09415 | 0.03454 |
+| random probe, periodic timing | 0.10447 | 0.03454 |
+| **disagreement probe, adaptive timing** | **0.07022** | 0.03454 |
+
+Both pieces matter: disagreement queries beat random queries at the same times, and adaptive timing beats periodic timing using disagreement queries. The result is documented in [GATE1_REAUDIT.md](GATE1_REAUDIT.md).
+
+This does **not** solve structural learning; it says that when several explanations already exist, controlling **what evidence to request and when to request it** can materially improve causal retrieval.
+
+## Gate 2 — fast current + retained memory
+
+Gate 2 keeps Astra's strong fast learner and adds frozen memories behind it.
 
 ```text
-prediction fails repeatedly
-        ↓
-train provisional expert on bounded recent evidence
-        ↓
-DO NOT admit it yet
-        ↓
-score incumbent and candidate on later outcomes
-before either sees each outcome
-        ↓
-future advantage > fixed structural penalty ?
+FAST CURRENT
+    aggressively tracks now
         │
-      yes ──► admit anonymous expert
-       no ──► discard candidate
+        ├── surprise can nominate a snapshot
+        │
+        ▼
+PROVISIONAL MEMORY
+    must predict later outcomes while frozen
+    and be functionally distinct
+        │
+        ▼
+RETAINED MEMORY
+    can be retrieved from completed evidence
+    before the next scored prediction
 ```
 
-The `error_only` condition removes that prospective admission test. It exists specifically as an attacker.
+Three arms isolate the mechanism:
+
+- `fast_only`: forgetting RLS;
+- `cache_only`: stores the same memories but never retrieves them;
+- `hybrid`: stores and causally retrieves them.
+
+### Main recurring world, 100 reused evaluation seeds
+
+| method | MSE ↓ | early familiar-return MSE ↓ | memories |
+|---|---:|---:|---:|
+| fast only | 0.025071 | 0.165754 | 0 |
+| cache only | 0.025071 | 0.165754 | 2.98 |
+| **hybrid** | **0.022754** | **0.130669** | 2.99 |
+
+Hybrid-minus-fast paired MSE is `-0.00231684`, bootstrap 95% interval `[-0.00299103, -0.00172017]`.
+
+The cache-only equality matters: **storage itself does nothing to prediction. Reuse does.**
+
+### The decisive negative
+
+In `A → B → C`, where distinct worlds never recur, the retention system still stores about **2.78 memories** yet gains no measurable prediction advantage over fast-only.
+
+So Gate 2 finds the next wall:
+
+> **Successful initial fit can justify a provisional memory. It cannot justify keeping that memory forever.**
+
+A close-context attacker at exactly the Paper protocol's minimum distance `0.6` still produces a small but repeatable hybrid gain, so the new rule is not merely rejecting subtle real contexts. Smooth drift is essentially tied with fast-only; a stationary quadratic mismatch creates no linear retained models.
+
+See [GATE2_RESULT.md](GATE2_RESULT.md) and the compact receipts in [`results/`](results/).
+
+## Current architecture
+
+The experiment now separates four operations that earlier repos repeatedly collapsed:
+
+```text
+ADAPT
+    change the fast current model
+
+RETAIN
+    preserve a candidate after future adequacy evidence
+
+RETRIEVE
+    reuse old knowledge when completed evidence makes it plausible
+
+INVESTIGATE
+    buy a PING when existing explanations remain ambiguous
+```
+
+The missing fifth operation is **FORGET / RECYCLE MEMORY ITSELF**.
+
+A retained model should acquire value only when its reuse actually saves future prediction error. Carrying it should cost memory. A model that never becomes useful again should eventually lose the right to occupy structure.
+
+That is Gate 3.
 
 ## Run
 
 ```bash
 python -m pip install -r requirements.txt
-python benchmark.py --start 0 --n 20 --out results/dev_run.json
 pytest -q
+python gate1_probe_controls.py --start 1000 --n 100
+python gate2_fast_memory.py --start 1000 --n 100
+python gate2_attacks.py --start 1000 --n 100
 ```
 
-The full frozen held-out receipt used 100 worlds. CI runs deterministic smoke/causality tests rather than recomputing the full receipt on every commit.
+The `1000–1099` worlds are reused throughout this repository lineage and must not be described as a fresh blind test set.
 
-## What this does **not** claim
+## What this does not claim
 
-Mixtures of experts, dynamic network expansion, latent-cause inference, Bayesian responsibility and continual-learning methods all predate this repository. This is not evidence for consciousness, a biological growth rule, or a novel general-purpose continual-learning algorithm.
+Mixtures of experts, latent-cause inference, dynamic expansion, fast/slow learning, episodic retrieval, active sensing and continual-learning methods all predate this repository. This work does not establish consciousness, a biological growth law, or a new state-of-the-art continual learner.
 
-The useful question is operational: **can structure be admitted only when future evidence shows that the extra structure earns its memory and interference cost?** Gate 0 says that criterion prevents two obvious kinds of false growth, but is still too conservative to win the main prediction benchmark.
-
-## Next gate
-
-The paper's harder protocol remains open: paid diagnostic PINGs, smooth drift, fixed total memory, recurrent baselines, return-to-context reacquisition, and eventually a substrate in which the *partition itself* is embodied rather than represented by a Python list of experts.
-
-That is where 368 should go next—not back to another biological analogy.
+Its useful contribution is narrower: keep exposing the decision boundaries with attackers until “grow” stops being a synonym for “prediction was bad.”
