@@ -1,0 +1,23 @@
+{
+  "schema": "repo368/gate1-matched-probe-controls-summary-v1",
+  "workflow_run": 34124268162,
+  "evaluation_seeds": [1000, 1099],
+  "n_worlds": 100,
+  "aggregate": {
+    "passive": {"mse": 0.10699829732976324, "returned_early16_mse": 0.09674693590104635, "probes_per_decision": 0.0},
+    "active_disagreement": {"mse": 0.07022057886609717, "returned_early16_mse": 0.06359532404441604, "probes_per_decision": 0.034542692614459455},
+    "random_same_timing": {"mse": 0.09517656396131453, "returned_early16_mse": 0.08931916263673001, "probes_per_decision": 0.034542692614459455},
+    "disagreement_periodic": {"mse": 0.09415206656682021, "returned_early16_mse": 0.08194100986696888, "probes_per_decision": 0.034542692614459455},
+    "random_periodic": {"mse": 0.10447164626611757, "returned_early16_mse": 0.09335530235743074, "probes_per_decision": 0.034542692614459455}
+  },
+  "paired": {
+    "active_minus_passive": {"mean_difference": -0.036777718463666086, "bootstrap95": [-0.05030618263799649, -0.02415706334514924]},
+    "random_same_timing_minus_passive": {"mean_difference": -0.011821733368448693, "bootstrap95": [-0.024750357647334655, 0.0012374266176027604]},
+    "active_minus_random_same_timing": {"mean_difference": -0.024955985095217393, "bootstrap95": [-0.0378775125479666, -0.012803120938874426]},
+    "active_minus_disagreement_periodic": {"mean_difference": -0.02393148770072306, "bootstrap95": [-0.03652737951811444, -0.011973845947769908]},
+    "disagreement_periodic_minus_random_periodic": {"mean_difference": -0.010319579699297374, "bootstrap95": [-0.017650933873696085, -0.0035841517544726903]},
+    "active_minus_random_periodic": {"mean_difference": -0.03425106740002043, "bootstrap95": [-0.04830107972906881, -0.021683554403854506]},
+    "active_minus_random_same_timing_early_return": {"mean_difference": -0.025723838592313964, "bootstrap95": [-0.04215512401266497, -0.010540587276822127]}
+  },
+  "claim_boundary": "All paid-probe arms use the same per-seed total probe budget as the active policy; random-same-timing uses the exact active probe times. Scored actions and scored noise are identical across arms and probe noise is independent of scored noise. In this fixed-bank toy, both disagreement-based query choice and adaptive probe timing contribute beyond matched controls."
+}
