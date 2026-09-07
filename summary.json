@@ -1,0 +1,87 @@
+{
+  "upstream_commit": "543a0225e796a7d8b9075fa911e42f3c5316635e",
+  "selected_discount": 0.5,
+  "gate0_max_frozen_difference": 0.0,
+  "gate1_max_frozen_difference": 0.0,
+  "evaluation_seeds": [
+    1000,
+    1099
+  ],
+  "aggregate": [
+    {
+      "family": "base",
+      "method": "forgetting_single",
+      "mean_mse": 0.025077881902099412,
+      "return_early16_mse": 0.1650308326823074,
+      "mean_accepted_candidates": 0.0,
+      "final_models": [
+        1
+      ]
+    },
+    {
+      "family": "base",
+      "method": "prospective_replace",
+      "mean_mse": 0.18915034683927628,
+      "return_early16_mse": 0.48030043601089534,
+      "mean_accepted_candidates": 3.51,
+      "final_models": [
+        1
+      ]
+    },
+    {
+      "family": "noise_burst",
+      "method": "forgetting_single",
+      "mean_mse": 0.039105319977866586,
+      "return_early16_mse": null,
+      "mean_accepted_candidates": 0.0,
+      "final_models": [
+        1
+      ]
+    },
+    {
+      "family": "quadratic_stationary",
+      "method": "forgetting_single",
+      "mean_mse": 0.07125835628320766,
+      "return_early16_mse": null,
+      "mean_accepted_candidates": 0.0,
+      "final_models": [
+        1
+      ]
+    }
+  ],
+  "paired_base": {
+    "forgetting_single_minus_growing": {
+      "mean_difference": -0.09697931037417641,
+      "bootstrap95": [
+        -0.10303987214442017,
+        -0.09103355584929432
+      ]
+    },
+    "prospective_replace_minus_growing": {
+      "mean_difference": 0.06709315456300051,
+      "bootstrap95": [
+        0.057994320789109384,
+        0.07670696937431587
+      ]
+    }
+  },
+  "paired_tradeoffs": {
+    "base_return_early16_mse_forgetting_minus_growing": {
+      "mean_difference": 0.0524927368867363,
+      "bootstrap95": [
+        0.036605185190492315,
+        0.068580815515671
+      ]
+    },
+    "noise_burst_mse_forgetting_minus_growing": {
+      "mean_difference": 0.017637653187701833,
+      "bootstrap95": [
+        0.016846223418084755,
+        0.01846274000117258
+      ]
+    }
+  },
+  "runtime": {
+    "numpy": "2.3.5"
+  }
+}

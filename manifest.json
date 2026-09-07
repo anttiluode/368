@@ -1,0 +1,34 @@
+{
+  "reviewed_repository": "anttiluode/368",
+  "reviewed_commit": "543a0225e796a7d8b9075fa911e42f3c5316635e",
+  "files": [
+    {
+      "path": "REPORT.md",
+      "sha256": "10140324a4f4b4e0586d365b4f70dc0629306a9ce0cb064d4c3ad225e315fd64"
+    },
+    {
+      "path": "alternative_baselines.json",
+      "sha256": "62e2cdea6f0201e9f168ae47e3e6526b8144f1a5c560f83acce5f3a59f2841fe"
+    },
+    {
+      "path": "audit.py",
+      "sha256": "2b3e0a5d01733244e355b53415315b2494b745cdf1d1a0774e3e5157f4c81343"
+    },
+    {
+      "path": "development.json",
+      "sha256": "cf794addd1e3bb785faf79c8bfe4ef48e3ad4e8b55232f7c6c2e1a8f7c9b3acc"
+    },
+    {
+      "path": "gate0_reproduction.json",
+      "sha256": "08497beb647ceea3250e9175f30ffbe6922b964f7aa41459bd94a570bc10bf06"
+    },
+    {
+      "path": "gate1_reproduction.json",
+      "sha256": "fec7eb2ce72da39ea2aeecc364f9d041b52a5d4e4eecd7824f2c32f56fecdd09"
+    },
+    {
+      "path": "summary.json",
+      "sha256": "40ee70fe99c388a05db63b9fe03f51e653a06ce7fef2bc52b714b4854cfc7374"
+    }
+  ]
+}
